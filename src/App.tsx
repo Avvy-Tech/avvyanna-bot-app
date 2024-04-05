@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { RetellWebClient } from "retell-client-js-sdk";
+import { useSearchParams } from "react-router-dom";
 
-const agentId = "YOUR_AGENT_ID";
+const agentId = "ab93bfffd1107ced534590e078bf4b21";
 
 interface RegisterCallResponse {
   callId?: string;
@@ -13,6 +14,8 @@ const webClient = new RetellWebClient();
 
 const App = () => {
   const [isCalling, setIsCalling] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams(); // Hook to access search parameters
+  const jobId = searchParams.get("jobId"); 
 
   // Initialize the SDK
   useEffect(() => {
@@ -63,7 +66,7 @@ const App = () => {
     try {
       // Replace with your server url
       const response = await fetch(
-        "http://localhost:8080/register-call-on-your-server",
+        "https://clownfish-app-ys8sm.ondigitalocean.app/register-call-on-your-server",
         {
           method: "POST",
           headers: {
@@ -71,6 +74,9 @@ const App = () => {
           },
           body: JSON.stringify({
             agentId: agentId,
+            metadata: {
+              jobId: jobId || '0'
+            }
           }),
         },
       );
@@ -90,6 +96,7 @@ const App = () => {
   return (
     <div className="App">
       <header className="App-header">
+      <p>Job ID: {jobId ? jobId : "Not provided"}</p> {/* Display jobId */}
         <button onClick={toggleConversation}>
           {isCalling ? "Stop" : "Start"}
         </button>
