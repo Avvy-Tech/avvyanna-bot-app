@@ -3,8 +3,8 @@ import "./App.css";
 import { RetellWebClient } from "retell-client-js-sdk";
 import { useSearchParams } from "react-router-dom";
 
-const agentId = "ab93bfffd1107ced534590e078bf4b21";
-
+const agentId = process.env.AGENT;
+const backendUrl = process.env.BACKEND_URL;
 interface RegisterCallResponse {
   callId?: string;
   sampleRate: number;
@@ -15,7 +15,7 @@ const webClient = new RetellWebClient();
 const App = () => {
   const [isCalling, setIsCalling] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams(); // Hook to access search parameters
-  const jobId = searchParams.get("jobId"); 
+  const jobId = searchParams.get("jobId");
 
   // Initialize the SDK
   useEffect(() => {
@@ -40,7 +40,7 @@ const App = () => {
 
     webClient.on("update", (update) => {
       // Print live transcript as needed
-      console.log("update", update);
+      console.log("update", update.transcript);
     });
   }, []);
 
@@ -48,7 +48,7 @@ const App = () => {
     if (isCalling) {
       webClient.stopConversation();
     } else {
-      const registerCallResponse = await registerCall(agentId);
+      const registerCallResponse = await registerCall(agentId || "");
       if (registerCallResponse.callId) {
         webClient
           .startConversation({
@@ -66,7 +66,7 @@ const App = () => {
     try {
       // Replace with your server url
       const response = await fetch(
-        "https://clownfish-app-ys8sm.ondigitalocean.app/register-call-on-your-server",
+        backendUrl + "/register-call-on-your-server",
         {
           method: "POST",
           headers: {
@@ -74,11 +74,9 @@ const App = () => {
           },
           body: JSON.stringify({
             agentId: agentId,
-            metadata: {
-              jobId: jobId || '0'
-            }
+            jobId: jobId || "0",
           }),
-        },
+        }
       );
 
       if (!response.ok) {
@@ -96,7 +94,7 @@ const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-      <p>Job ID: {jobId ? jobId : "Not provided"}</p> {/* Display jobId */}
+        <p>Job ID: {jobId ? jobId : "Not provided"}</p> {/* Display jobId */}
         <button onClick={toggleConversation}>
           {isCalling ? "Stop" : "Start"}
         </button>
