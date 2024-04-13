@@ -3,8 +3,8 @@ import "./App.css";
 import { RetellWebClient } from "retell-client-js-sdk";
 import { useSearchParams } from "react-router-dom";
 
-const agentId = process.env.AGENT;
-const backendUrl = process.env.BACKEND_URL;
+const agentId = process.env.REACT_APP_AGENT;
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 interface RegisterCallResponse {
   callId?: string;
   sampleRate: number;
@@ -66,7 +66,7 @@ const App = () => {
     try {
       // Replace with your server url
       const response = await fetch(
-        backendUrl + "/register-call-on-your-server",
+        `${backendUrl}/register-call-on-your-server`,
         {
           method: "POST",
           headers: {
