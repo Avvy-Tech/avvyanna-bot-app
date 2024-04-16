@@ -15,7 +15,7 @@ const webClient = new RetellWebClient();
 const App = () => {
   const [isCalling, setIsCalling] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams(); // Hook to access search parameters
-  const jobId = searchParams.get("jobId");
+  const interviewId = searchParams.get("interviewId");
 
   // Initialize the SDK
   useEffect(() => {
@@ -74,7 +74,7 @@ const App = () => {
           },
           body: JSON.stringify({
             agentId: agentId,
-            jobId: jobId || "0",
+            interviewId: interviewId || "0",
           }),
         }
       );
@@ -94,7 +94,6 @@ const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <p>Job ID: {jobId ? jobId : "Not provided"}</p> {/* Display jobId */}
         <button onClick={toggleConversation} id="startHeidy">
           {isCalling ? "Stop" : "Start"}
         </button>
