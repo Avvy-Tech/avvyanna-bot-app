@@ -15,21 +15,16 @@ const webClient = new RetellWebClient();
 const App = () => {
   const [isCalling, setIsCalling] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams(); // Hook to access search parameters
-  const interviewId = searchParams.get("interviewId");
+  const meetingId = searchParams.get("meetingId");
 
   // Initialize the SDK
   useEffect(() => {
     // Setup event listeners
-    webClient.on("conversationStarted", () => {
-      console.log("conversationStarted");
-    });
+    webClient.on("conversationStarted", () => {});
 
-    webClient.on("audio", (audio: Uint8Array) => {
-      console.log("There is audio");
-    });
+    webClient.on("audio", (audio: Uint8Array) => {});
 
     webClient.on("conversationEnded", ({ code, reason }) => {
-      console.log("Closed with code:", code, ", reason:", reason);
       setIsCalling(false); // Update button to "Start" when conversation ends
     });
 
@@ -40,7 +35,6 @@ const App = () => {
 
     webClient.on("update", (update) => {
       // Print live transcript as needed
-      console.log("update", update.transcript);
     });
   }, []);
 
@@ -74,7 +68,7 @@ const App = () => {
           },
           body: JSON.stringify({
             agentId: agentId,
-            interviewId: interviewId || "0",
+            meetingId: meetingId || "0",
           }),
         }
       );
